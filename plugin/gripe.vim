@@ -39,6 +39,10 @@ if !exists('g:gripe_ag_cmd')
   let g:gripe_ag_cmd = 'ag --nobreak --nocolor --column --nogroup --noheading'
 endif
 
+if !exists('g:gripe_ag_default_path')
+  let g:gripe_ag_default_path = ''
+endif
+
 if !exists('g:gripe_use_glob_shortcuts')
   let g:gripe_use_glob_shortcuts = 0
 endif
@@ -129,7 +133,12 @@ function! GripeTool(search_term, path)
     try
       let &grepprg    = g:gripe_ag_cmd
       let &grepformat = g:gripe_ag_format
-      silent! exe 'lgrep! ' . shellescape(escape(a:search_term, '|')) . ' ' . escape(a:path, '|')
+      if g:gripe_ag_default_path != ''
+        let path = g:gripe_ag_default_path
+      else
+        let path = a:path
+      endif
+      silent! exe 'lgrep! ' . shellescape(escape(a:search_term, '|')) . ' ' . escape(path, '|')
       redraw!
       let success = 1
     finally
